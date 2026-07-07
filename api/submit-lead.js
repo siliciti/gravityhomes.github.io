@@ -1,10 +1,21 @@
 // api/submit-lead.js
 
 export default async function handler(req, res) {
-  // ===== 1. CORS HEADERS FOR GITHUB PAGES =====
-  // This allows your static GitHub Pages site to securely communicate with this API
+  // ===== 1. CORS HEADERS FOR PRODUCTION & DEVELOPMENT =====
+  const allowedOrigins = [
+    'https://gravityhomes.siliciti.com', // Development
+    'https://gravityhomes.in',           // Live Production
+    'https://www.gravityhomes.in'        // Live Production (with www)
+  ];
+
+  const origin = req.headers.origin;
+
+  // If the request comes from one of our verified domains, echo it back
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', 'https://gravityhomes.siliciti.com'); // 🔒 Updated to your live custom domain
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -27,7 +38,6 @@ export default async function handler(req, res) {
     const leadRatApiUrl   = 'https://connect.leadrat.com/api/v1/integration/Website';
     const leadratApiKey   = process.env.LEADRAT_API_KEY;
 
-    // Fail-safe check if Environment Variables are missing in Vercel settings
     if (!recaptchaSecret || !leadratApiKey) {
       console.error("CRITICAL CONFIG ERROR: Missing Vercel Environment Variables.");
       return res.status(500).json({ 
@@ -63,7 +73,7 @@ export default async function handler(req, res) {
     const message = data.message || '';
 
     if (!name || !mobile || !message) {
-      return res.status(400).json({ status: 'error', msg: 'Missing required fields (name, mobile, message)' });
+      return res.status(400).json({ status: 'error', msg: 'Missing required fields' });
     }
 
     // ===== 5. BUILD LEADRAT PAYLOAD =====
