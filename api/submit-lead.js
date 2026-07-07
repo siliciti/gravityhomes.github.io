@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   // ===== 1. CORS HEADERS FOR GITHUB PAGES =====
   // This allows your static GitHub Pages site to securely communicate with this API
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', 'https://siliciti.github.io'); 
+  res.setHeader('Access-Control-Allow-Origin', 'https://gravityhomes.siliciti.com'); // 🔒 Updated to your live custom domain
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
